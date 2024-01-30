@@ -3,8 +3,6 @@ import numpy as np
 import serial
 import time
 
-cx = 0
-
 serial_port = serial.Serial('COM10', 9600)  # Ganti 'COMx' dengan port USB yang digunakan
 
 def kirim_nilai_analog(nilai):
@@ -12,6 +10,7 @@ def kirim_nilai_analog(nilai):
     time.sleep(0.1)
 
 def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels, warna):
+    global cx
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     if warna == 1 :
@@ -55,7 +54,7 @@ def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels, warna):
     if ball_count > 0:
         cv2.putText(frame, f"TOTAL BOLA: {ball_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255), 2)
     print(type(cx))
-    nilai_sensor = 10  
+    nilai_sensor = cx  
     kirim_nilai_analog(nilai_sensor)
     return frame, result_frame
     
