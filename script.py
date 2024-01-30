@@ -1,10 +1,17 @@
 import cv2
 import numpy as np
+import serial
+import time
 
-# def nothing(x):
-#     pass
+cx = 0
 
-def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels,warna):
+serial_port = serial.Serial('COM10', 9600)  # Ganti 'COMx' dengan port USB yang digunakan
+
+def kirim_nilai_analog(nilai):
+    serial_port.write(f"{nilai}\n".encode('utf-8'))
+    time.sleep(0.1)
+
+def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels, warna):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     if warna == 1 :
@@ -18,7 +25,6 @@ def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels,warna):
         upper = np.array([130, 255, 255])#U_PURPLE
 
     masking = cv2.inRange(hsv, lower, upper)
-    cv2.imshow("Result Frame (Red)", masking)
     result_frame = cv2.bitwise_and(frame, frame, mask=masking)
     contours, _ = cv2.findContours(masking, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     # cv2.imshow("result_frame Frame", result_frame)
@@ -38,20 +44,22 @@ def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels,warna):
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Green rectangle
                 cv2.putText(frame, f"{object_size_cm:.2f} cm", (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
                 cv2.putText(frame, f"({cx}, {cy})", (x, y + h + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-                cv2.putText(frame, f"BALL_RED {ball_count + 1} ", (x, y + h + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+                cv2.putText(frame, f"BALL_ {ball_count + 1} ", (x, y + h + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
                 if cx < 213:
-                    cv2.putText(frame, f"left", (cx - 5, cy - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255),2)
+                    cv2.putText(frame, f"LEFT", (cx - 5, cy - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255),2)
                 if cx > 213 and cx < 427:
-                    cv2.putText(frame, f"center", (cx - 5, cy - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255), 2)                    
+                    cv2.putText(frame, f"CENTER", (cx - 5, cy - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255), 2)                    
                 if cx > 427:
-                    cv2.putText(frame, f"right", (cx - 5, cy - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255), 2)
+                    cv2.putText(frame, f"RIGHT", (cx - 5, cy - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255), 2)
                 ball_count += 1
     if ball_count > 0:
-        cv2.putText(frame, f"Total BOLA_MERAH: {ball_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255), 2)
-    print((ball_count))
+        cv2.putText(frame, f"TOTAL BOLA: {ball_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255), 2)
+    print(type(cx))
+    nilai_sensor = 10  
+    kirim_nilai_analog(nilai_sensor)
     return frame, result_frame
+    
 cap = cv2.VideoCapture(0)
-
 
 while True:
     ret, frame = cap.read()
@@ -61,11 +69,11 @@ while True:
 
     frame = cv2.resize(frame, (640, 480))
     
-    result_frame, _  = detect_and_count_balls(frame, pixels_per_cm=20, min_size_pixels=1000, warna = 2)
+    result_frame, _  = detect_and_count_balls(frame, pixels_per_cm=20, min_size_pixels=1000, warna = 3)
     
-    cv2.imshow("Result Frame", red_result_frame)
+    cv2.imshow("Result Frame", result_frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
+serial_port.close()
 cap.release()
