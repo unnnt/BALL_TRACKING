@@ -7,8 +7,8 @@ import time
 serial_port = serial.Serial('COM10', 115200)  # Ganti 'COMx' dengan port USB yang digunakan
 
 def kirim_nilai_analog(nilai):
-    serial_port.write(f"{nilai}\n".encode('utf-8'))
-    time.sleep(0.1)
+   serial_port.write(f"{nilai}\n".encode('utf-8'))
+   time.sleep(0.1)
 
 def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels, warna):
     
@@ -53,10 +53,11 @@ def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels, warna):
                     cv2.putText(frame, f"CENTER", (cx - 25, cy - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0, 255, 255), 2)                    
                 if cx > 427:
                     cv2.putText(frame, f"RIGHT", (cx - 25, cy - 25), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0, 255, 255), 2)
-                ball_count += 1
-                # print(cx)
-                nilai_sensor = cx  
                 kirim_nilai_analog(nilai_sensor)
+                ball_count += 1
+                print(cx)
+                nilai_sensor = cx  
+                    
                 focal_length = 17.
                   # Ganti dengan panjang fokus kamera yang sesuai
                 real_object_size_cm = 7  # Ganti dengan ukuran sebenarnya objek
@@ -78,7 +79,7 @@ while True:
 
     frame = cv2.resize(frame, (640, 480))
     
-    result_frame, _  = detect_and_count_balls(frame, pixels_per_cm=25, min_size_pixels=1000, warna = 2)
+    result_frame, _  = detect_and_count_balls(frame, pixels_per_cm=25, min_size_pixels=1000, warna = 3)
     
     cv2.imshow("Result Frame", result_frame)
 
