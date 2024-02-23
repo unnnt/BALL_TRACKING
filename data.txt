@@ -1,0 +1,27 @@
+//====================DATA WARNA=====================
+lower_red = np.array([0, 100, 100])
+upper_red = np.array([10, 255, 255])
+
+lower_blue = np.array([61, 100, 100])
+upper_blue = np.array([112, 255, 255])
+
+lower_purple = np.array([114, 100, 100])
+upper_purple = np.array([130, 255, 255])
+
+
+//====================PIN=====================
+
+MOTOR DEPAN
+EN1 = 3
+IN1 = 7
+IN2 = 2
+IN3 = 4
+IN4 = 5
+EN2 = 6
+MOTOR BELAKANG
+EN1 = 11
+IN1 = 13
+IN2 = 12
+IN3 = 9
+IN4 = 8
+EN2 = 10
