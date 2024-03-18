@@ -14,10 +14,13 @@
 #define IN8 8
 #define EN4 10
 
+
 int maju[]       = {HIGH  , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH , LOW};
+int curve_kanan[]= {HIGH  , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH , LOW};
+int curve_kiri[] = {HIGH  , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH , LOW};
 int mudur[]      = {LOW   , HIGH , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH};
-int kiri[]       = {HIGH  , LOW  , HIGH , LOW  , LOW  , LOW  , HIGH , LOW};
-int kanan[]      = {LOW   , HIGH , LOW  , HIGH , HIGH , LOW  , LOW  , LOW};
+int kiri[]       = {HIGH  , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH , LOW};
+int kanan[]      = {LOW   , HIGH , LOW  , HIGH , HIGH , LOW  , HIGH , LOW};
 int rot_kiri[]   = {HIGH  , LOW  , HIGH , LOW  , LOW  , HIGH , LOW  , HIGH};
 int rot_kanan[]  = {LOW   , HIGH , LOW  , HIGH , HIGH , LOW  , HIGH , LOW};
 int stopp[]      = {LOW   , LOW  , LOW  , LOW  , LOW  , LOW  , LOW  , LOW};
@@ -52,10 +55,16 @@ void setup_pinmotor() {
 
 
 void jalan(int gerak[], int pwm) {
-  analogWrite(EN1, pwm);
-  analogWrite(EN2, pwm);
-  analogWrite(EN3, pwm);
-  analogWrite(EN4, pwm);
+  int pwm_baru = pwm-100;
+  if (gerak == curve_kanan) {
+    analogWrite(EN1, pwm);  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm);  analogWrite(EN4, pwm/2);
+  }
+  else if(gerak == curve_kiri){
+    analogWrite(EN1, (pwm/2));  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm/2);  analogWrite(EN4, pwm);
+    }
+  else {
+    analogWrite(EN1, pwm);  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm);  analogWrite(EN4, pwm);
+  }
   for (int i = 0; i < 8; i++) {
     digitalWrite(pinMotor(i), gerak[i]);
   }
