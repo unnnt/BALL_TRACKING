@@ -29,10 +29,9 @@ Servo myServo;
 #define SERVO_WRITE(x)
 #endif
 
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27,16,2); 
 
-#define OLED_RESET     4
-Adafruit_SSD1306 display(128, 32, &Wire, OLED_RESET);
 //============================================================================================================VARIABEL=================================
-int x, y;
+int x, y; 
+float new_yaw;

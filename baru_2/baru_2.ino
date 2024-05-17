@@ -7,18 +7,17 @@
 int b;
 
 void setup() {
+  lcd.init();
+  lcd.backlight();
   DEBUG_BEGIN(115200);
   setup_pinmotor();
   setup_mpu();
   SERVO_PIN(9);
-  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
-    Serial.println(F("SSD1306 allocation failed"));
-    for (;;); // Don't proceed, loop forever
-  }
   b = 1;
 }
 
 void loop() {
+  Serial.print("getYaw = ");Serial.print(getYaw()); Serial.println("\t");
   if (b == 1) {
     for (int a = 0; a <= 5; a++) {
 
@@ -28,12 +27,13 @@ void loop() {
         jalan(stopp, 120);
       }
       else {
-        Serial.print(getYaw()); Serial.print("\t");
-        output1 = calculatePID(getYaw(), setpoint1, Kp1, Ki1, Kd1, lastError1, integral1, output1);
+        new_yaw = 2 * getYaw();
+        Serial.print("new = ");Serial.print(new_yaw); Serial.print("\t");
+        output1 = calculatePID(new_yaw, setpoint1, Kp1, Ki1, Kd1, lastError1, integral1, output1);
         Serial.println(output1);
         maju_grak();
         detect();        
-        tampil(1, output1, x, y);
+        tampil(new_yaw, output1, x, y);
       }
     }
   }
@@ -42,16 +42,11 @@ void loop() {
   }
 }
 
-void tampil(int text_size, double PID, int X, int Y) {
-  display.clearDisplay();
-  display.setTextSize(text_size);
-  display.setTextColor(WHITE);
-  display.setCursor(1, 5);
-  display.print("YAW = "); display.println(getYaw());
-  display.print("X,Y = "); display.print(X); display.print(","); display.println(Y);
-  display.print("Error = "); display.println(PID);
-
-  display.display();
+void tampil(float new_yaw, double PID, int X, int Y) {
+  lcd.setCursor(0, 0); lcd.print("Y=");
+  lcd.setCursor(2, 0); lcd.print(new_yaw);
+  lcd.setCursor(0, 1); lcd.print(X); lcd.print(","); lcd.println(Y);
+  lcd.setCursor(10, 0); lcd.print("e="); lcd.print(PID);
 }
 
 void putar() {
