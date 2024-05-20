@@ -1,3 +1,8 @@
+//================================VARIABEL=================================
+int x, y, sisi, jarak, persentase; 
+float new_yaw;
+
+
 //#define SOFTWARE_SERIAL
 #define SERIAL_MONITOR
 
@@ -8,6 +13,7 @@
 #define DEBUG_PRINT(x) Serial.print(x)
 #define DEBUG_PRINTLN(x) Serial.println(x)
 #elif defined(SOFTWARE_SERIAL)
+
 #include <SoftwareSerial.h>
 SoftwareSerial mySerial(11, 10); // RX, TX
 #define DEBUG_BEGIN(x) mySerial.begin(x)
@@ -31,7 +37,3 @@ Servo myServo;
 
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27,16,2); 
-
-//============================================================================================================VARIABEL=================================
-int x, y; 
-float new_yaw;

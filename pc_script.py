@@ -11,7 +11,7 @@ import time
 # GPIO.setup(5, GPIO.OUT)  # Pin 5 untuk LED merah
 # GPIO.setup(6, GPIO.OUT)  # Pin 6 untuk LED biru
 
-serial_port = serial.Serial('COM3', 115200)  # Ganti 'COMx' dengan port USB yang digunakan
+serial_port = serial.Serial('COM4', 115200)  # Ganti 'COMx' dengan port USB yang digunakan
 
 def kirim_nilai_analog(nilai):
     serial_port.write(f"S{nilai}E\n".encode('utf-8'))
@@ -57,7 +57,8 @@ def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels, warna, focal_l
     contours, _ = cv2.findContours(masking, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     result_frame = cv2.bitwise_and(frame, frame, mask=masking)
-    cv2.imshow("1 Frame", gray)
+    cv2.imshow("abu Frame", gray)
+    cv2.imshow("rgb Frame", result_frame)
     
     ball_count = 0
     closest_distance = float('inf')
@@ -88,17 +89,17 @@ def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels, warna, focal_l
             hsv_area_right = cv2.countNonZero(cv2.cvtColor(hsv_right, cv2.COLOR_BGR2GRAY))
             
             if visibility_percent < 75:
-                sisi = "kiri" if hsv_area_left > hsv_area_right else "kanan"
+                sisi = -1 if hsv_area_left > hsv_area_right else 1
             else:
-                sisi = "FULL"
-
-            kirim_nilai_analog(f"{nilai_sensor_x} {nilai_sensor_y} {distance} {sisi} {visibility_percent}")
+                sisi = 0
 
             if distance < closest_distance:
                 closest_distance = distance
                 closest_ball = (x, y)
 
             ball_count += 1
+            
+            kirim_nilai_analog(f"{nilai_sensor_x} {nilai_sensor_y} {sisi} {visibility_percent} {distance}") 
 
             cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 0), 2)
             cv2.putText(frame, f"{distance:.2f} cm ({sisi})", (int(x) - int(radius), int(y) - int(radius) - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
@@ -113,7 +114,7 @@ def detect_and_count_balls(frame, pixels_per_cm, min_size_pixels, warna, focal_l
 
     return frame, result_frame
 
-cap = cv2.VideoCapture(1)  # Menggunakan kamera default laptop
+cap = cv2.VideoCapture(0)  # Menggunakan kamera default laptop
 
 # Menggunakan focal length yang dihitung dari program terpisah
 focal_length = 707  # Ganti dengan nilai focal length yang dihitung
