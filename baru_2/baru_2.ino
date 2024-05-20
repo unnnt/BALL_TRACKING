@@ -1,6 +1,7 @@
 #include "CFG.h"
 #include "PID_v2.h"
-#include "GYRO.h"
+//#include "GYRO.h"
+#include "GYRO_v2.h"
 #include "MOTOR.h"
 #include "DETECT.h"
 
@@ -10,6 +11,7 @@ void setup() {
   lcd.init();
   lcd.backlight();
   DEBUG_BEGIN(115200);
+  setup_mpu();
   setup_pinmotor();
   setup_mpu();
   SERVO_PIN(9);
@@ -17,6 +19,10 @@ void setup() {
 }
 
 void loop() {
+  float yaw = getYaw(thd);
+    Serial.print("yaw: "); Serial.println(yaw);
+//    delay(100); // Delay to make the output readable
+    /*
   Serial.print("getYaw = ");Serial.print(getYaw()); Serial.println("\t");
   if (b == 1) {
     for (int a = 0; a <= 5; a++) {
@@ -40,6 +46,7 @@ void loop() {
   else {
     jalan(stopp, 120);
   }
+  */
 }
 
 void tampil(float new_yaw, double PID, int X, int Y) {

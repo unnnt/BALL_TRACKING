@@ -29,11 +29,3 @@ double calculatePID(double input, double setpoint, double Kp, double Ki, double 
   lastError = error;  
   return output;
 }
-
-//void loop() {
-//  double input1 = analogRead(A0);
-//  double input2 = analogRead(A1);
-//  
-//  double output1 = calculatePID(input1, setpoint1, Kp1, Ki1, Kd1, lastError1, integral1, output1);
-//  double output2 = calculatePID(input2, setpoint2, Kp2, Ki2, Kd2, lastError2, integral2, output2);
-//}
