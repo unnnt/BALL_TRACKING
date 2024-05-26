@@ -15,17 +15,29 @@ Quaternion q;
 VectorFloat gravity;
 float ypr[3];
 
-const int numReadings = 20;
-float readings[numReadings];
-float average = 0;
-float thd = 0.0000000000001;
+float kalmanYaw = 0.0;
+float kalmanGain = 0.0;
+float estimationError = 0.0001;
+float measurementError = 0.00001; // Adjust as needed
+float processNoise = 0.000001;   // Adjust as needed
 
 void setup_mpu() {
     Wire.begin();
     Serial.begin(115200);
 
     mpu.initialize();
-    mpu.testConnection();
+    if (!mpu.testConnection()) {
+        Serial.println("MPU6050 connection failed");
+        while (1);
+    }
+
+    // Set offset (adjust these values based on your calibration)
+    mpu.setXAccelOffset(13108);
+    mpu.setYAccelOffset(-14400);
+    mpu.setZAccelOffset(5906);
+    mpu.setXGyroOffset(72);
+    mpu.setYGyroOffset(591);
+    mpu.setZGyroOffset(-2);
 
     devStatus = mpu.dmpInitialize();
 
@@ -34,21 +46,22 @@ void setup_mpu() {
         dmpReady = true;
         mpuIntStatus = mpu.getIntStatus();
         packetSize = mpu.dmpGetFIFOPacketSize();
-
-        for (int thisReading = 0; thisReading < numReadings; thisReading++) {
-            readings[thisReading] = 0;
-        }
+    } else {
+        Serial.print("DMP Initialization failed (code ");
+        Serial.print(devStatus);
+        Serial.println(")");
     }
 }
 
-float getYaw(float yawThreshold) {
-    if (!dmpReady) return 0;
+
+float getYaw() {
+    if (!dmpReady) return 0.0;
 
     fifoCount = mpu.getFIFOCount();
 
     if (fifoCount == 1024) {
         mpu.resetFIFO();
-    } else if (fifoCount >= 42) {
+    } else if (fifoCount >= packetSize) {
         mpu.getFIFOBytes(fifoBuffer, packetSize);
         mpuIntStatus = mpu.getIntStatus();
 
@@ -64,22 +77,12 @@ float getYaw(float yawThreshold) {
             yawInDegrees += 360;
         }
 
-        for (int i = 0; i < numReadings - 1; i++) {
-            readings[i] = readings[i+1];
-        }
-        readings[numReadings - 1] = yawInDegrees;
+        // Kalman filter update
+        kalmanGain = estimationError / (estimationError + measurementError);
+        kalmanYaw = kalmanYaw + kalmanGain * (yawInDegrees - kalmanYaw);
+        estimationError = (1.0 - kalmanGain) * estimationError + fabs(kalmanYaw) * processNoise;
 
-        float total = 0;
-        for (int i = 0; i < numReadings; i++) {
-            total += readings[i];
-        }
-        average = total / numReadings;
-
-        if (abs(yawInDegrees - average) < yawThreshold) {
-            return average;
-        } else {
-            return yawInDegrees;
-        }
+        return kalmanYaw;
     }
-    return average;
+    return kalmanYaw;
 }

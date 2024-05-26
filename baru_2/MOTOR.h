@@ -1,29 +1,30 @@
-// Motor depan
-#define EN1 3
-#define IN1 7
-#define IN2 2
-#define IN3 4
-#define IN4 5
-#define EN2 6
+// Motor depan          BAWAH KE ATAS
+#define EN1 4          //KANAN-D
+#define IN1 64
+#define IN2 36
+#define IN3 12
+#define IN4 2
+#define EN2 9          //KIRI-D
 
-// Motor belakang
-#define EN3 11
-#define IN5 13
-#define IN6 12
-#define IN7 9
-#define IN8 8
-#define EN4 10
+// Motor belakang       LUAR KE DALAM
+#define EN3 3          //KANAN-B
+#define IN5 11
+#define IN6 6
+#define IN7 8
+#define IN8 10
+#define EN4 7          //KIRI-B
 
 
-int maju[]       = {HIGH  , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH , LOW};
-int curve_kanan[]= {HIGH  , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH , LOW};
-int curve_kiri[] = {HIGH  , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH , LOW};
-int mudur[]      = {LOW   , HIGH , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH};
-int kiri[]       = {HIGH  , LOW  , HIGH , LOW  , HIGH , LOW  , HIGH , LOW};
-int kanan[]      = {LOW   , HIGH , LOW  , HIGH , HIGH , LOW  , HIGH , LOW};
-int rot_kiri[]   = {HIGH  , LOW  , HIGH , LOW  , LOW  , HIGH , LOW  , HIGH};
-int rot_kanan[]  = {LOW   , HIGH , LOW  , HIGH , HIGH , LOW  , HIGH , LOW};
-int stopp[]      = {LOW   , LOW  , LOW  , LOW  , LOW  , LOW  , LOW  , LOW};
+int maju[]        = {1 , 0 , 1 , 0 , 1 , 0 , 1 , 0};
+int curve_kanan[] = {1 , 0 , 1 , 0 , 1 , 0 , 1 , 0};
+int curve_kiri[]  = {1 , 0 , 1 , 0 , 1 , 0 , 1 , 0};
+int kanan[]       = {0 , 1 , 1 , 0 , 1 , 0 , 0 , 1};
+int kiri[]        = {1 , 0 , 0 , 1 , 0 , 1 , 1 , 0};
+int mundur[]      = {0 , 1 , 0 , 1 , 0 , 1 , 0 , 1};
+int rot_kiri[]    = {1 , 0 , 0 , 1 , 1 , 0 , 0 , 1};
+int rot_kanan[]   = {0 , 1 , 1 , 0 , 0 , 1 , 1 , 0};
+int stopp[]       = {0 , 0 , 0 , 0 , 0 , 0 , 0 , 0};
+
 
 int pinMotor(int index) {
   switch (index) {
@@ -55,15 +56,19 @@ void setup_pinmotor() {
 
 
 void jalan(int gerak[], int pwm) {
-  int pwm_baru = pwm-100;
+  int pwm_baru = pwm - 100;
+  int pwm_e1  = pwm+60;
+  int pwm_e2  = pwm+10;
+  int pwm_e3  = pwm+10;
+  int pwm_e4  = pwm-60;
   if (gerak == curve_kanan) {
-    analogWrite(EN1, pwm);  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm);  analogWrite(EN4, pwm/2);
+    analogWrite(EN1, pwm_e1);  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm);  analogWrite(EN4, pwm / 2);
   }
-  else if(gerak == curve_kiri){
-    analogWrite(EN1, (pwm/2));  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm/2);  analogWrite(EN4, pwm);
-    }
+  else if (gerak == curve_kiri) {
+    analogWrite(EN1, (pwm_e1 / 2));  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm / 2);  analogWrite(EN4, pwm);
+  }
   else {
-    analogWrite(EN1, pwm);  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm);  analogWrite(EN4, pwm);
+    analogWrite(EN1, pwm_e1);  analogWrite(EN2, (pwm_e2));  analogWrite(EN3, pwm_e3);  analogWrite(EN4, pwm_e4);
   }
   for (int i = 0; i < 8; i++) {
     digitalWrite(pinMotor(i), gerak[i]);

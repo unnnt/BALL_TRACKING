@@ -1,7 +1,9 @@
 //================================VARIABEL=================================
 int x, y, sisi, jarak, persentase; 
-float new_yaw;
-
+float new_yaw;int yaw;
+int putar_pwm;
+//=========================MODE============================
+#define PUTAR 1
 
 //#define SOFTWARE_SERIAL
 #define SERIAL_MONITOR

@@ -25,3 +25,14 @@ IN2 = 12
 IN3 = 9
 IN4 = 8
 EN2 = 10
+
+
+==========================pin raspi======================
+25-- PILIH WARNA_SW
+14-- LED_ON
+17-- LED_PROCESS
+22-- ON_DET_SW
+5--- LED_RED
+6--- LED_BLUE
+
+12,13,26	(SUB)
