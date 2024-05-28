@@ -1,8 +1,8 @@
 #include "CFG.h"
 #include "GYRO_v2.h"
+#include "DETECT.h"
 #include "MOTOR.h"
 #include "PID_v2.h"
-#include "DETECT.h"
 #include "LCD.h"
 
 int b;
@@ -20,24 +20,24 @@ void setup() {
 
 void loop() {
 
-    yaw = getYaw();
-    output1 = calculatePID(yaw, setpoint1, Kp1, Ki1, Kd1, lastError1, integral1, output1);
-    gerak(PUTAR,output1);
-    tampil(yaw, output1, x, y, jarak, sisi, persentase);
+//      yaw = getYaw();
+//      output1 = calculatePID(yaw, setpoint1, Kp1, Ki1, Kd1, lastError1, integral1, output1);
+//      gerak(PUTAR,output1);
+//      tampil(yaw, output1, x, y, jarak, sisi, persentase);
 
-    /*
+//      /*
   //------------------------------------------------------------------------baca yaw
   if (b == 1) {
-    detect();
-    for (int a =0; a < 220; a++) {
+    //    detect();
+    for (int a = 0; a < 220; a = a + 50) {
       if (a < 180) {
         //        analogWrite(EN1, a);
 
-        jalan(maju, a);
+        jalan(go_kiri, 170);
         Serial.print("speed: "); Serial.println(a);
         //        digitalWrite(IN1, HIGH);
         //        digitalWrite(IN2, LOW);
-        delay(20);
+        delay(300);
         //        lcd.setCursor(10, 0);
         //        lcd.print("e="); lcd.print(a);
       }
@@ -56,16 +56,16 @@ void loop() {
       }
     }
   }
-  */
+//    */
 }
 
 
 void maju_grak() {
   if (int(yaw) < -1) {
-    jalan(curve_kiri, 180);
+    jalan(go_kiri, 180);
   }
   else if (int(yaw) > 1) {
-    jalan(curve_kanan, 180);
+    jalan(go_kanan, 180);
   }
   else {
     jalan(maju, 180);

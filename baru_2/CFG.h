@@ -1,9 +1,10 @@
 //================================VARIABEL=================================
-int x, y, sisi, jarak, persentase; 
-float new_yaw;int yaw;
-int putar_pwm;
+int x, y, sisi, jarak, persentase;
+float new_yaw; int yaw;
+int putar_pwm; int minpwm, maxpwm;
 //=========================MODE============================
 #define PUTAR 1
+#define FOLLOW_BOLA 2
 
 //#define SOFTWARE_SERIAL
 #define SERIAL_MONITOR
@@ -38,4 +39,4 @@ Servo myServo;
 #endif
 
 #include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27,16,2); 
+LiquidCrystal_I2C lcd(0x27, 16, 2);

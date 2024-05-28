@@ -1,7 +1,7 @@
 // Motor depan          BAWAH KE ATAS
 #define EN1 4          //KANAN-D
-#define IN1 64
-#define IN2 36
+#define IN1 36
+#define IN2 64
 #define IN3 12
 #define IN4 2
 #define EN2 9          //KIRI-D
@@ -16,6 +16,8 @@
 
 
 int maju[]        = {1 , 0 , 1 , 0 , 1 , 0 , 1 , 0};
+int go_kanan[]    = {1 , 0 , 1 , 0 , 1 , 0 , 1 , 0};
+int go_kiri[]     = {1 , 0 , 1 , 0 , 1 , 0 , 1 , 0};
 int curve_kanan[] = {1 , 0 , 1 , 0 , 1 , 0 , 1 , 0};
 int curve_kiri[]  = {1 , 0 , 1 , 0 , 1 , 0 , 1 , 0};
 int kanan[]       = {0 , 1 , 1 , 0 , 1 , 0 , 0 , 1};
@@ -54,21 +56,31 @@ void setup_pinmotor() {
   pinMode(EN3, OUTPUT); pinMode(IN5, OUTPUT);  pinMode(IN6, OUTPUT); pinMode(IN7, OUTPUT);  pinMode(IN8, OUTPUT); pinMode(EN4, OUTPUT);
 }
 
-
+int pwm_baru(int pwm,int kurang) {
+    pwm = pwm - kurang;  //khusus putar -60   kiri -35
+    return pwm;
+  }
 void jalan(int gerak[], int pwm) {
-  int pwm_baru = pwm - 100;
-  int pwm_e1  = pwm+60;
-  int pwm_e2  = pwm+10;
-  int pwm_e3  = pwm+10;
-  int pwm_e4  = pwm-60;
-  if (gerak == curve_kanan) {
-    analogWrite(EN1, pwm_e1);  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm);  analogWrite(EN4, pwm / 2);
+  if (gerak == go_kiri) {
+    analogWrite(EN1, pwm);  analogWrite(EN2, pwm / 2);  analogWrite(EN3, pwm / 2);  analogWrite(EN4, pwm_baru(pwm,35));
+  }
+  else if (gerak == go_kanan) {
+    analogWrite(EN1, pwm / 2);  analogWrite(EN2, pwm);  analogWrite(EN3, pwm);  analogWrite(EN4, pwm / 2);
   }
   else if (gerak == curve_kiri) {
-    analogWrite(EN1, (pwm_e1 / 2));  analogWrite(EN2, (pwm));  analogWrite(EN3, pwm / 2);  analogWrite(EN4, pwm);
+    analogWrite(EN1, pwm);  analogWrite(EN2, pwm / 2);  analogWrite(EN3, pwm);  analogWrite(EN4, pwm_baru(pwm,35));
+  }
+  else if (gerak == curve_kanan) {
+    analogWrite(EN1, pwm);  analogWrite(EN2, pwm);  analogWrite(EN3, pwm);  analogWrite(EN4, pwm);
+  }
+  else if (gerak == rot_kiri) {
+    analogWrite(EN1, pwm);  analogWrite(EN2, pwm);  analogWrite(EN3, pwm);  analogWrite(EN4, pwm_baru(pwm,60));
+  }
+  else if (gerak == rot_kanan) {
+    analogWrite(EN1, pwm);  analogWrite(EN2, pwm);  analogWrite(EN3, pwm);  analogWrite(EN4, pwm);
   }
   else {
-    analogWrite(EN1, pwm_e1);  analogWrite(EN2, (pwm_e2));  analogWrite(EN3, pwm_e3);  analogWrite(EN4, pwm_e4);
+    analogWrite(EN1, pwm);  analogWrite(EN2, pwm);  analogWrite(EN3, pwm);  analogWrite(EN4, pwm);
   }
   for (int i = 0; i < 8; i++) {
     digitalWrite(pinMotor(i), gerak[i]);
